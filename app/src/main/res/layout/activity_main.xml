@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/purple_500"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
         <LinearLayout
@@ -29,26 +29,27 @@
 
         </LinearLayout>
 
+
         <LinearLayout
             android:id="@+id/ll_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_below="@id/ll_include_controls"
-            android:background="@color/colorPrimary">
+            android:layout_marginTop="0dp"
+            android:background="@color/purple_500">
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="10dp"
-                app:tabBackground="@color/colorPrimary"
+                app:tabBackground="@color/purple_500"
                 app:tabGravity="fill"
-                app:tabIndicatorColor="@color/colorPrimary"
+                app:tabIndicatorColor="@color/purple_500"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/text_color"
                 app:tabTextColor="@color/off_color" />
         </LinearLayout>
-
 
         <android.support.v4.view.ViewPager
             android:id="@+id/songs_viewpager"
@@ -61,13 +62,13 @@
             android:id="@+id/btn_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="15dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
             android:focusable="true"
             android:src="@drawable/refresh_icon"
-            app:backgroundTint="@color/colorPrimary"
+            app:backgroundTint="@color/purple_500"
             app:layout_anchor="@id/songs_viewpager" />
 
     </RelativeLayout>

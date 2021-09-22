@@ -8,11 +8,12 @@
     android:gravity="center">
 
     <ImageView
-        android:layout_marginStart="10dp"
         android:id="@+id/img_icon"
         android:layout_width="120dp"
         android:layout_height="120dp"
+        android:layout_marginStart="10dp"
         android:focusable="true"
+        android:foregroundGravity="center_horizontal"
         android:src="@drawable/headset_icon" />
 
     <TextView
@@ -20,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/img_icon"
         android:text="@string/title"
+        android:gravity="center_horizontal"
         android:textColor="@color/text_color"
         android:textSize="30sp"
         android:textStyle="bold" />

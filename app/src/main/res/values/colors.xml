@@ -3,7 +3,7 @@
     <color name="colorPrimary">#45b5ec</color>
     <color name="colorPrimaryDark">#1c8fc7</color>
     <color name="colorAccent">#000000</color>
-
+    <color name="purple_500">#FF6200EE</color>
     <color name="text_color">#ffffff</color>
     <color name="color_black">#000000</color>
     <color name="drawer_color">#335763</color>

@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 import android.widget.SeekBar;
@@ -44,6 +45,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AllSongFragment.createDataParse, FavSongFragment.createDataParsed, CurrentSongFragment.createDataParsed {
 
+    //we start by declaring the variables defining their  types
+    //like the menu variable is a private Menu type
     private Menu menu;
 
     private ImageButton imgBtnPlayPause, imgbtnReplay, imgBtnPrev, imgBtnNext, imgBtnSetting;
@@ -52,8 +55,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SeekBar seekbarController;
     private DrawerLayout mDrawerLayout;
     private TextView tvCurrentTime, tvTotalTime;
+    private FloatingActionButton refreshSongs;
 
-
+    //create a mutable list
     private ArrayList<SongsList> songList;
     private int currentPosition;
     private String searchText = "";
@@ -63,16 +67,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int MY_PERMISSION_REQUEST = 100;
     private int allSongLength;
 
+    private Toolbar toolbar;
+
     MediaPlayer mediaPlayer;
+    //declaring Handler as a handler
+    //handler communicates the ui thread with the background threads
+    //handlers allow you to send messages and runnable objects (tasks which are to be executed once or repeatedly)
+    //handlers add messages from threads to the messagequeue
+    //Each handler is associated with a thread and that thread's message queue
     Handler handler;
+    //declaring Runnable as a runnable
     Runnable runnable;
 
-
+    //start the app
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //it is a shortform for initializer
+        //it is used to initialize libraries during startup
+        //it is a function that we will create
         init();
+        //it is a function that we will create to check if  the permissions are given
         grantedPermission();
 
     }
@@ -89,24 +105,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tvCurrentTime = findViewById(R.id.tv_current_time);
         tvTotalTime = findViewById(R.id.tv_total_time);
-        FloatingActionButton refreshSongs = findViewById(R.id.btn_refresh);
+        refreshSongs = findViewById(R.id.btn_refresh);
         seekbarController = findViewById(R.id.seekbar_controller);
         viewPager = findViewById(R.id.songs_viewpager);
         NavigationView navigationView = findViewById(R.id.nav_view);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         imgBtnPlayPause = findViewById(R.id.img_btn_play);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
+
+        //create new objects
         handler = new Handler();
+        //create a media player object which you cn use to load new mp3 files into or play one over and over
         mediaPlayer = new MediaPlayer();
 
+        //set the text color of the text to white
         toolbar.setTitleTextColor(getResources().getColor(R.color.text_color));
+        //remove the default action bar and add the toolbar as the main actionbar
         setSupportActionBar(toolbar);
 
+        //getSupportActionBar() enables you to use the utility methods of the actionbar
         ActionBar actionBar = getSupportActionBar();
+        //assert used to declare a boolean condition to a program
+        //we declare the action bar is set to null
         assert actionBar != null;
+        //add the back button to the actionbar as an arrow <-
         actionBar.setDisplayHomeAsUpEnabled(true);
+        //add the hambuger button to the actionbar
         actionBar.setHomeAsUpIndicator(R.drawable.menu_icon);
 
+        //add listeners to the buttons
         imgBtnNext.setOnClickListener(this);
         imgBtnPrev.setOnClickListener(this);
         imgbtnReplay.setOnClickListener(this);
@@ -114,6 +141,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgBtnPlayPause.setOnClickListener(this);
         imgBtnSetting.setOnClickListener(this);
 
+        //a navigationView is a standard navigation menu for application
+        //it is typically placed inside a Drawerlayout
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -134,17 +163,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
 
     private void grantedPermission() {
-        if (ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST);
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST);
+        //contextcompat is used when you want to retrieve resources
+        //here we are retrieving a permission
+        //checkSelfPermission is used to check if the user has granted permission
+        //PackageManager is an API that manages the installation and unistall and upgrade of the
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST);
+
+            //ActivityCompat is a helper for accessing features
+            //shouldShowRequestPermissionRationale returns boolean indicating whether or not we should show UI with reason of requesting for permission
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST);
             } else {
-                if (ContextCompat.checkSelfPermission(MainActivity.this,
-                        Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this,    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     Snackbar snackbar = Snackbar.make(mDrawerLayout, "Provide the Storage Permission", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
@@ -184,8 +215,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
 
     private void setPagerLayout() {
+        //viewpager is a widget that allows you to switch between screens by swiping left or right
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), getContentResolver());
         viewPager.setAdapter(adapter);
+        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -309,19 +342,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onClick(View v) {
+        //we are now handling the click events of the play and pause buttons
+        //we use switch case because It provides an easy way to dispatch execution to different parts of code based on the value of the expression
         switch (v.getId()) {
+            //incase the play button is clicked
             case R.id.img_btn_play:
                 if (checkFlag) {
                     if (mediaPlayer.isPlaying()) {
                         mediaPlayer.pause();
                         imgBtnPlayPause.setImageResource(R.drawable.play_icon);
+                        Toast.makeText(this, "Pausing song", Toast.LENGTH_LONG).show();
                     } else if (!mediaPlayer.isPlaying()) {
                         mediaPlayer.start();
                         imgBtnPlayPause.setImageResource(R.drawable.pause_icon);
-                        playCycle();
+                        Toast.makeText(this, "Playing song", Toast.LENGTH_LONG).show();
+                        //run the playcycle function
+                            playCycle();
                     }
                 } else {
-                    Toast.makeText(this, "Select the Song ..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Select a Song ..", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.btn_refresh:
